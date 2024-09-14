@@ -74,6 +74,71 @@ void print(Node* head){
     cout<<endl;
 }
 
+//This approach has space complexity of O(1)
+Node *copyListApproach2(Node *head) {
+        Node* cloneHead = NULL;
+        Node* cloneTail = NULL;
+        Node*temp = head;
+        
+        //step 1: copy list with normal pointers
+        while(temp!=NULL){
+            insertAtTail(cloneHead,cloneTail,temp->data);
+            temp=temp->next;
+        }
+        
+        //step 2 : add clone nodes between original nodes
+        Node* originalNode = head;
+        Node* cloneNode = cloneHead;
+        while(originalNode != NULL && cloneNode!=NULL){
+            Node* next = originalNode->next;
+            originalNode->next = cloneNode;
+            originalNode =next;
+            
+            //same for clone list
+            next = cloneNode->next;
+            cloneNode->next = originalNode;
+            cloneNode = next;
+        }
+        
+        //step 3 : Radnom pointer copy
+        temp = head;
+        while(temp != NULL){
+            if(temp->next!=NULL){
+                temp->next->random = temp->random?temp->random->next:temp->random;
+            }
+            temp= temp->next->next;
+            
+            /* or 
+            if(temp->next !=NULL{
+                If(Temp->random!=NULL{
+                    temp->next->random = temp->random->next;
+                }
+                else{
+                    temp->next->random = temp->random;
+                }
+            }
+            temp= temp->next->next;
+            
+            */
+        }
+        
+        //step 4 : Revert chnages in step 2
+        originalNode = head;
+        cloneNode = cloneHead;
+        while(originalNode != NULL && cloneNode!=NULL){
+            originalNode->next = cloneNode->next;
+            originalNode = originalNode->next;
+            
+            //same for clone list
+            if(originalNode !=NULL){
+                cloneNode->next = originalNode->next;
+            }
+            cloneNode = cloneNode->next;
+        }
+        return cloneHead;
+        
+        
+    }
 int main() {
     // Create an unsorted linked list with duplicates
     // Example: 5 -> 1 -> 3 -> 2 -> 5 -> 3 -> 4 -> 1
